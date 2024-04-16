@@ -8,42 +8,48 @@
 		<version>3.2.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>FlowerShop</artifactId>
+	<groupId>ru.neoflex.flower-shop</groupId>
+	<artifactId>flower-shop</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
-	<name>FlowerShop</name>
-	<description>Flower Shop</description>
+	<packaging>jar</packaging>
+	<name>flower-shop</name>
+	<description>flower-shop</description>
 	<properties>
 		<java.version>17</java.version>
+		<postgresql.version>42.7.2</postgresql.version>
+		<jpa.version>3.2.4</jpa.version>
+		<lombok.version>1.18.32</lombok.version>
+		<web.version>3.2.4</web.version>
+		<test.version>3.2.4</test.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jdbc</artifactId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>${jpa.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${web.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<version>${test.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

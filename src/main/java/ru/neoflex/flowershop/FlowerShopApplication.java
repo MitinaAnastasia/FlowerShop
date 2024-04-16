@@ -1,4 +1,4 @@
-package com.example.FlowerShop;
+package ru.neoflex.flowershop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
