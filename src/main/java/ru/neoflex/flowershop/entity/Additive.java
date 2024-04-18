@@ -1,6 +1,14 @@
 package ru.neoflex.flowershop.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Column;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,10 +25,10 @@ public class Additive {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "additive_id", nullable = false)
-    private Long additiveId;
+    private Long id;
 
     @Column(name = "additive_name", nullable = false)
-    private String additiveName;
+    private String name;
 
     @ManyToMany
     @JoinTable(name = "additive_flower",

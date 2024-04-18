@@ -1,9 +1,18 @@
 package ru.neoflex.flowershop.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Column;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
@@ -14,16 +23,16 @@ public class Bouquet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bouquet_id", nullable = false)
-    private Long bouquetId;
+    private Long id;
 
     @Column(name = "bouquet_name", nullable = false)
-    private String bouquetName;
+    private String name;
 
     @Column(name = "number_of_flowers", nullable = false)
-    private int numberOfFlowers;
+    private Integer numberOfFlowers;
 
     @Column(name = "cost", nullable = false)
-    private double cost;
+    private BigDecimal cost;
 
     @ManyToOne
     @JoinColumn(name = "flower_id_fk", nullable = false)
