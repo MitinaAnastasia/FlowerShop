@@ -6,7 +6,6 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.neoflex.flowershop.dto.FlowerDTO;
-import ru.neoflex.flowershop.entity.Flower;
 import ru.neoflex.flowershop.service.FlowerService;
 
 import java.math.BigDecimal;
@@ -32,61 +30,54 @@ public class FlowerController {
     private final FlowerService flowerService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<Flower>> findAll() {
-        return ResponseEntity.ok().body(flowerService.findAll());
+    public ResponseEntity<List<FlowerDTO>> findAll() {
+        List<FlowerDTO> flowerDTOS = flowerService.findAll();
+        return ResponseEntity.ok(flowerDTOS);
     }
 
     @GetMapping("/find-name")
-    public ResponseEntity<List<Flower>> findAllByName(@RequestParam
+    public ResponseEntity<List<FlowerDTO>> findAllByName(@RequestParam
         @NotBlank(message = "Название должно содержать хотя бы один непробельный символ")
         @Pattern(regexp = "^[а-яА-ЯЁё ]+$", message = "Название должно содержать только буквы русского алфавита и пробелы")
         String name) {
-        return ResponseEntity.ok().body(flowerService.findAllByName(name));
+        List<FlowerDTO> flowerDTOS = flowerService.findAllByName(name);
+        return ResponseEntity.ok(flowerDTOS);
     }
 
     @GetMapping("/find-cost")
-    public ResponseEntity<List<Flower>> findAllByCost(@RequestParam
+    public ResponseEntity<List<FlowerDTO>> findAllByCost(@RequestParam
         @DecimalMin(message = "Стоимость цветка не должна быть меньше 50 рублей", value = "50")
         @DecimalMax(message = "Стоимость цветка не должна быть больше 250 рублей", value = "250") BigDecimal cost) {
-        return ResponseEntity.ok().body(flowerService.findAllByCost(cost));
+        List<FlowerDTO> flowerDTOS = flowerService.findAllByCost(cost);
+        return ResponseEntity.ok(flowerDTOS);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Flower> createFlower(@Valid @RequestBody FlowerDTO flowerDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(flowerService.insertFlower(toEntity(flowerDTO)));
+    public ResponseEntity<FlowerDTO> createFlower(@Valid @RequestBody FlowerDTO flowerDTO) {
+        FlowerDTO flowerDTOCreate = flowerService.insertFlower(flowerDTO);
+        return ResponseEntity.ok(flowerDTOCreate);
     }
 
     @PutMapping("/update-name")
-    public ResponseEntity<Flower> updateFlowerName(@RequestParam Long id, @RequestParam
+    public ResponseEntity<FlowerDTO> updateFlowerName(@RequestParam Long id, @RequestParam
     @NotBlank(message = "Название должно содержать хотя бы один непробельный символ")
     @Pattern(regexp = "^[а-яА-ЯЁё ]+$", message = "Название должно содержать только буквы русского алфавита и пробелы")
     String name){
-        return ResponseEntity.status(HttpStatus.CREATED).body(flowerService.updateFlowerName(id, name));
+        FlowerDTO flowerDTO = flowerService.updateFlowerName(id, name);
+        return ResponseEntity.ok(flowerDTO);
     }
 
     @PutMapping("/update-cost")
-    public ResponseEntity<Flower> updateFlowerCost(@RequestParam Long id, @RequestParam
+    public ResponseEntity<FlowerDTO> updateFlowerCost(@RequestParam Long id, @RequestParam
     @DecimalMin(message = "Стоимость цветка не должна быть меньше 50 рублей", value = "50")
     @DecimalMax(message = "Стоимость цветка не должна быть больше 250 рублей", value = "250") BigDecimal cost){
-        return ResponseEntity.status(HttpStatus.CREATED).body(flowerService.updateFlowerCost(id, cost));
+        FlowerDTO flowerDTO = flowerService.updateFlowerCost(id, cost);
+        return ResponseEntity.ok(flowerDTO);
     }
 
     @PutMapping("/update-description")
-    public ResponseEntity<Flower> updateFlowerDescription(@RequestParam Long id, @RequestParam String description){
-        return ResponseEntity.status(HttpStatus.CREATED).body(flowerService.updateFlowerDescription(id, description));
-    }
-
-    private Flower toEntity(FlowerDTO flowerDTO) {
-        Flower flower = new Flower();
-        flower.setId(flowerDTO.getId());
-        flower.setName(flowerDTO.getName());
-        flower.setCost(flowerDTO.getCost());
-        flower.setHeight(flowerDTO.getHeight());
-        flower.setDescription(flowerDTO.getDescription());
-        flower.setPeriodInWater(flowerDTO.getPeriodInWater());
-        flower.setSeason(flowerDTO.getSeason());
-        flower.setProvider(flowerDTO.getProvider());
-        flower.setAdditives(flowerDTO.getAdditives());
-        return flower;
+    public ResponseEntity<FlowerDTO> updateFlowerDescription(@RequestParam Long id, @RequestParam String description){
+        FlowerDTO flowerDTO = flowerService.updateFlowerDescription(id, description);
+        return ResponseEntity.ok(flowerDTO);
     }
 }
