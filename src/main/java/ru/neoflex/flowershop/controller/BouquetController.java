@@ -63,25 +63,15 @@ public class BouquetController {
         return ResponseEntity.ok(bouquetDTOCreate);
     }
 
-    @PutMapping("/update-name")
-    public ResponseEntity<BouquetDTO> updateBouquetName(@RequestParam Long id, @RequestParam
-    @NotBlank(message = "Название должно содержать хотя бы один непробельный символ")
-    @Pattern(regexp = "^[а-яА-ЯЁё ]+$", message = "Название должно содержать только буквы русского алфавита и пробелы")
-    String name) {
-        BouquetDTO bouquetDTO = bouquetService.updateBouquetName(id, name);
-        return ResponseEntity.ok(bouquetDTO);
-    }
-
-    @PutMapping("/update-cost")
-    public ResponseEntity<BouquetDTO> updateBouquetCost(@RequestParam Long id, @RequestParam
-    @DecimalMin(message = "Стоимость букета не должна быть меньше 100 рублей", value = "100") BigDecimal cost) {
-        BouquetDTO bouquetDTO = bouquetService.updateBouquetCost(id, cost);
-        return ResponseEntity.ok(bouquetDTO);
+    @PutMapping("/update")
+    public ResponseEntity<BouquetDTO> updateBouquet(@Valid @RequestBody BouquetDTO bouquetDTO) {
+        BouquetDTO bouquetDTOUpdate = bouquetService.updateBouquet(bouquetDTO);
+        return ResponseEntity.ok(bouquetDTOUpdate);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteBouquet(@Valid @RequestBody BouquetDTO bouquetDTO) {
-        bouquetService.deleteBouquet(bouquetDTO);
+    public ResponseEntity<Void> deleteBouquet(@RequestParam Long id) {
+        bouquetService.deleteBouquet(id);
         return ResponseEntity.ok().build();
     }
 }

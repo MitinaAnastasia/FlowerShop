@@ -10,7 +10,6 @@ public interface BouquetService {
     List<BouquetDTO> findAllByCost(BigDecimal cost);
     List<BouquetDTO> findAllByFlowerId(Long id);
     BouquetDTO insertBouquet(BouquetDTO bouquetDTO);
-    BouquetDTO updateBouquetName(Long id, String name);
-    BouquetDTO updateBouquetCost(Long id, BigDecimal cost);
-    void deleteBouquet(BouquetDTO bouquetDTO);
+    BouquetDTO updateBouquet(BouquetDTO bouquetDTO);
+    void deleteBouquet(Long id);
 }

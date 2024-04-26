@@ -24,27 +24,18 @@ public class FlowerServiceImpl implements FlowerService {
     @Override
     public List<FlowerDTO> findAll(){
         List<Flower> flowers = flowerRepository.findAll();
-        flowers.stream().findFirst().orElseThrow(()->
-            new EntityNotFoundException (ErrorConstant.FLOWERS_NOT_FOUND_MESSAGE)
-        );
         return flowerMapper.fromListFlowerToListFlowerDTO(flowers);
     }
 
     @Override
     public List<FlowerDTO> findAllByName(String name){
         List<Flower> flowers = flowerRepository.findAllByName(name);
-        flowers.stream().findFirst().orElseThrow(()->
-            new EntityNotFoundException (StringUtils.join(ErrorConstant.FLOWERS_WITH_NAME_NOT_FOUND_MESSAGE, name))
-        );
         return flowerMapper.fromListFlowerToListFlowerDTO(flowers);
     }
 
     @Override
     public List<FlowerDTO> findAllByCost(BigDecimal cost){
         List<Flower> flowers = flowerRepository.findAllByCost(cost);
-        flowers.stream().findFirst().orElseThrow(()->
-                new EntityNotFoundException (StringUtils.join(ErrorConstant.FLOWERS_WITH_COST_NOT_FOUND_MESSAGE, cost))
-        );
         return flowerMapper.fromListFlowerToListFlowerDTO(flowers);
     }
 
@@ -57,31 +48,11 @@ public class FlowerServiceImpl implements FlowerService {
 
     @Override
     @Transactional
-    public FlowerDTO updateFlowerName(Long id, String name){
-        Flower flower = flowerRepository.findById(id).orElseThrow(()->
-                new EntityNotFoundException (StringUtils.join(ErrorConstant.FLOWER_WITH_ID_NOT_FOUND_MESSAGE, id))
+    public FlowerDTO updateFlower(FlowerDTO flowerDTO){
+        Flower flower = flowerRepository.findById(flowerDTO.getId()).orElseThrow(()->
+                new EntityNotFoundException (StringUtils.join(ErrorConstant.FLOWER_WITH_ID_NOT_FOUND_MESSAGE, flowerDTO.getId()))
         );
-        flower.setName(name);
-        return flowerMapper.fromFlowerToFlowerDTO(flowerRepository.save(flower));
-    }
-
-    @Override
-    @Transactional
-    public FlowerDTO updateFlowerCost(Long id, BigDecimal cost){
-        Flower flower = flowerRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException (StringUtils.join(ErrorConstant.FLOWER_WITH_ID_NOT_FOUND_MESSAGE, id))
-        );
-        flower.setCost(cost);
-        return flowerMapper.fromFlowerToFlowerDTO(flowerRepository.save(flower));
-    }
-
-    @Override
-    @Transactional
-    public FlowerDTO updateFlowerDescription(Long id, String description){
-        Flower flower = flowerRepository.findById(id).orElseThrow(()->
-                new EntityNotFoundException (StringUtils.join(ErrorConstant.FLOWER_WITH_ID_NOT_FOUND_MESSAGE, id))
-        );
-        flower.setDescription(description);
+        flowerMapper.updateFlower(flowerDTO, flower);
         return flowerMapper.fromFlowerToFlowerDTO(flowerRepository.save(flower));
     }
 }

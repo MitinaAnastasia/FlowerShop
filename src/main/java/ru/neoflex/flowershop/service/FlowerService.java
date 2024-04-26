@@ -9,7 +9,5 @@ public interface FlowerService {
     List<FlowerDTO> findAllByName(String name);
     List<FlowerDTO> findAllByCost(BigDecimal cost);
     FlowerDTO insertFlower(FlowerDTO flowerDTO);
-    FlowerDTO updateFlowerName(Long id, String name);
-    FlowerDTO updateFlowerCost(Long id, BigDecimal cost);
-    FlowerDTO updateFlowerDescription(Long id, String description);
+    FlowerDTO updateFlower(FlowerDTO flowerDTO);
 }

@@ -24,36 +24,24 @@ public class BouquetServiceImpl implements BouquetService {
     @Override
     public List<BouquetDTO> findAll(){
         List<Bouquet> bouquets = bouquetRepository.findAll();
-        bouquets.stream().findFirst().orElseThrow(()->
-                new EntityNotFoundException(ErrorConstant.BOUQUETS_NOT_FOUND_MESSAGE)
-        );
         return bouquetMapper.fromListBouquetToListBouquetDTO(bouquets);
     }
 
     @Override
     public List<BouquetDTO> findAllByName(String name){
         List<Bouquet> bouquets = bouquetRepository.findAllByName(name);
-        bouquets.stream().findFirst().orElseThrow(()->
-                new EntityNotFoundException(StringUtils.join(ErrorConstant.BOUQUETS_WITH_NAME_NOT_FOUND_MESSAGE, name))
-        );
         return bouquetMapper.fromListBouquetToListBouquetDTO(bouquets);
     }
 
     @Override
     public List<BouquetDTO> findAllByCost(BigDecimal cost) {
         List<Bouquet> bouquets = bouquetRepository.findAllByCost(cost);
-        bouquets.stream().findFirst().orElseThrow(() ->
-                new EntityNotFoundException(StringUtils.join(ErrorConstant.BOUQUETS_WITH_COST_NOT_FOUND_MESSAGE, cost))
-        );
         return bouquetMapper.fromListBouquetToListBouquetDTO(bouquets);
     }
 
     @Override
     public List<BouquetDTO> findAllByFlowerId(Long id){
         List<Bouquet> bouquets = bouquetRepository.findAllByFlowerId(id);
-        bouquets.stream().findFirst().orElseThrow(()->
-                new EntityNotFoundException (StringUtils.join(ErrorConstant.BOUQUETS_WiTH_FLOWERS_WITH_ID_NOT_FOUND_MESSAGE, id))
-        );
         return bouquetMapper.fromListBouquetToListBouquetDTO(bouquets);
     }
 
@@ -66,27 +54,19 @@ public class BouquetServiceImpl implements BouquetService {
 
     @Override
     @Transactional
-    public BouquetDTO updateBouquetName(Long id, String name){
-        Bouquet bouquet = bouquetRepository.findById(id).orElseThrow(()->
-                new EntityNotFoundException (StringUtils.join(ErrorConstant.BOUQUET_WITH_ID_NOT_FOUND_MESSAGE, id))
+    public BouquetDTO updateBouquet(BouquetDTO bouquetDTO){
+        Bouquet bouquet = bouquetRepository.findById(bouquetDTO.getId()).orElseThrow(()->
+                new EntityNotFoundException (StringUtils.join(ErrorConstant.BOUQUET_WITH_ID_NOT_FOUND_MESSAGE, bouquetDTO.getId()))
         );
-        bouquet.setName(name);
+        bouquetMapper.updateBouquet(bouquetDTO, bouquet);
         return bouquetMapper.fromBouquetToBouquetDTO(bouquetRepository.save(bouquet));
     }
 
     @Override
-    @Transactional
-    public BouquetDTO updateBouquetCost(Long id, BigDecimal cost){
-        Bouquet bouquet = bouquetRepository.findById(id).orElseThrow(()->
+    public void deleteBouquet(Long id){
+        bouquetRepository.findById(id).orElseThrow(()->
                 new EntityNotFoundException (StringUtils.join(ErrorConstant.BOUQUET_WITH_ID_NOT_FOUND_MESSAGE, id))
         );
-        bouquet.setCost(cost);
-        return bouquetMapper.fromBouquetToBouquetDTO(bouquetRepository.save(bouquet));
-    }
-
-    @Override
-    public void deleteBouquet(BouquetDTO bouquetDTO){
-        Bouquet bouquet = bouquetMapper.fromBouquetDTOToBouquet(bouquetDTO);
-        bouquetRepository.delete(bouquet);
+        bouquetRepository.deleteById(id);
     }
 }

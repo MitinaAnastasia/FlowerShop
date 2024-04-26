@@ -58,26 +58,9 @@ public class FlowerController {
         return ResponseEntity.ok(flowerDTOCreate);
     }
 
-    @PutMapping("/update-name")
-    public ResponseEntity<FlowerDTO> updateFlowerName(@RequestParam Long id, @RequestParam
-    @NotBlank(message = "Название должно содержать хотя бы один непробельный символ")
-    @Pattern(regexp = "^[а-яА-ЯЁё ]+$", message = "Название должно содержать только буквы русского алфавита и пробелы")
-    String name){
-        FlowerDTO flowerDTO = flowerService.updateFlowerName(id, name);
-        return ResponseEntity.ok(flowerDTO);
-    }
-
-    @PutMapping("/update-cost")
-    public ResponseEntity<FlowerDTO> updateFlowerCost(@RequestParam Long id, @RequestParam
-    @DecimalMin(message = "Стоимость цветка не должна быть меньше 50 рублей", value = "50")
-    @DecimalMax(message = "Стоимость цветка не должна быть больше 250 рублей", value = "250") BigDecimal cost){
-        FlowerDTO flowerDTO = flowerService.updateFlowerCost(id, cost);
-        return ResponseEntity.ok(flowerDTO);
-    }
-
-    @PutMapping("/update-description")
-    public ResponseEntity<FlowerDTO> updateFlowerDescription(@RequestParam Long id, @RequestParam String description){
-        FlowerDTO flowerDTO = flowerService.updateFlowerDescription(id, description);
-        return ResponseEntity.ok(flowerDTO);
+    @PutMapping("/update")
+    public ResponseEntity<FlowerDTO> updateFlower(@Valid @RequestBody FlowerDTO flowerDTO){
+        FlowerDTO flowerDTOUpdate = flowerService.updateFlower(flowerDTO);
+        return ResponseEntity.ok(flowerDTOUpdate);
     }
 }
