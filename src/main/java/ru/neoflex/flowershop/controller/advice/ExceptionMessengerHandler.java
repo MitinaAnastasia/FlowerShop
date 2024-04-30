@@ -2,6 +2,7 @@ package ru.neoflex.flowershop.controller.advice;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @ControllerAdvice
+@Slf4j
 public class ExceptionMessengerHandler {
 
     @ResponseBody
@@ -22,7 +24,10 @@ public class ExceptionMessengerHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public List<ErrorMessage> onConstraintValidationException(ConstraintViolationException e) {
         return e.getConstraintViolations().stream()
-                .map(error -> new ErrorMessage(error.getPropertyPath().toString(), error.getMessage())).toList();
+                .map(error -> {
+                    log.warn("ExceptionMessengerHandler.onConstraintValidationException - error {}", error.getMessage());
+                    return new ErrorMessage(error.getPropertyPath().toString(), error.getMessage());
+                }).toList();
     }
 
     @ResponseBody
@@ -30,13 +35,17 @@ public class ExceptionMessengerHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public List<ErrorMessage> onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         return e.getBindingResult().getFieldErrors().stream()
-                .map(error -> new ErrorMessage(error.getField(), error.getDefaultMessage())).toList();
+                .map(error -> {
+                    log.warn("ExceptionMessengerHandler.onMethodArgumentNotValidException - error {}", error.getDefaultMessage());
+                    return new ErrorMessage(error.getField(), error.getDefaultMessage());
+                }).toList();
     }
 
     @ResponseBody
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse onEntityNotFoundException(EntityNotFoundException e) {
+        log.warn("ExceptionMessengerHandler.onEntityNotFoundException - not found entity {}", e.getMessage());
         return new ErrorResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND.value(), "Entity not found", e.getMessage());
     }
 

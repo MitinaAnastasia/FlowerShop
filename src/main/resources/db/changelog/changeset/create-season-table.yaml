@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-season
+      author: Anastasia
+      changes:
+        - createTable:
+            tableName: season
+            ifNotExists: true
+            columns:
+              - column:
+                  name: season_id
+                  type: serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: season_name
+                  type: text
+                  constraints:
+                    nullable: false

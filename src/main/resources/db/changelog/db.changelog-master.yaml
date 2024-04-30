@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/create-season-table.yaml
+  - include:
+      file: db/changelog/changeset/create-provider-table.yaml
+  - include:
+      file: db/changelog/changeset/create-flower-table.yaml
+  - include:
+      file: db/changelog/changeset/create-additive-table.yaml
+  - include:
+      file: db/changelog/changeset/create-additive-flower-table.yaml
+  - include:
+      file: db/changelog/changeset/create-bouquet-table.yaml
+  - include:
+      file: db/changelog/changeset/insert-season.yaml
+  - include:
+      file: db/changelog/changeset/insert-provider.yaml

@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-provider
+      author: Anastasia
+      changes:
+        - createTable:
+            tableName: provider
+            ifNotExists: true
+            columns:
+              - column:
+                  name: provider_id
+                  type: serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: provider_name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: provider_address
+                  type: text
+                  constraints:
+                    nullable: true
+              - column:
+                  name: provider_phone
+                  type: text
+                  constraints:
+                    nullable: true

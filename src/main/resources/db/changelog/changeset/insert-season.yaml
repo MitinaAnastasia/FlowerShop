@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-season
+      author: Anastasia
+      changes:
+        - insert:
+            tableName: season
+            columns:
+              - column:
+                  name: season_name
+                  value: "лето"
+        - insert:
+            tableName: season
+            columns:
+              - column:
+                  name: season_name
+                  value: "осень"
+        - insert:
+            tableName: season
+            columns:
+              - column:
+                  name: season_name
+                  value: "зима"
+        - insert:
+            tableName: season
+            columns:
+              - column:
+                  name: season_name
+                  value: "весна"

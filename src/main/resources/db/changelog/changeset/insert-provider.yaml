@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-provider
+      author: Anastasia
+      changes:
+        - insert:
+            tableName: provider
+            columns:
+              - column:
+                  name: provider_name
+                  value: "Розы по всей России"
+              - column:
+                  name: provider_address
+                  value: null
+              - column:
+                  name: provider_phone
+                  value: null
+        - insert:
+            tableName: provider
+            columns:
+              - column:
+                  name: provider_name
+                  value: "купи-тюльпан"
+              - column:
+                  name: provider_address
+                  value: null
+              - column:
+                  name: provider_phone
+                  value: null

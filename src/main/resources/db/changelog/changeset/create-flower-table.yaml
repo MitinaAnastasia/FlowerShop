@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-flower
+      author: Anastasia
+      changes:
+        - createTable:
+            tableName: flower
+            ifNotExists: true
+            columns:
+              - column:
+                  name: flower_id
+                  type: serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: cost
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: height
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+                  constraints:
+                    nullable: true
+              - column:
+                  name: period_in_water
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: season_id_fk
+                  type: int
+                  constraints:
+                    foreignKeyName: season_fk
+                    referencedTableName: season
+                    referencedColumnNames: season_id
+                    nullable: false
+              - column:
+                  name: provider_id_fk
+                  type: int
+                  constraints:
+                    foreignKeyName: provider_fk
+                    referencedTableName: provider
+                    referencedColumnNames: provider_id
+                    nullable: false

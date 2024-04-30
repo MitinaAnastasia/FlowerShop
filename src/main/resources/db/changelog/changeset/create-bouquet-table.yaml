@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-bouquet
+      author: Anastasia
+      changes:
+        - createTable:
+            tableName: bouquet
+            ifNotExists: true
+            columns:
+              - column:
+                  name: bouquet_id
+                  type: serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: bouquet_name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number_of_flowers
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: cost
+                  type: double precision
+                  constraints:
+                    nullable: false
+              - column:
+                  name: flower_id_fk
+                  type: int
+                  constraints:
+                    foreignKeyName: flower_fk
+                    referencedTableName: flower
+                    referencedColumnNames: flower_id
+                    nullable: false
