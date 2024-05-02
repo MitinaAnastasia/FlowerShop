@@ -26,6 +26,7 @@
 		<version.lombok-mapstruct-binding>0.2.0</version.lombok-mapstruct-binding>
 		<commons-lang3.version>3.14.0</commons-lang3.version>
 		<mapstruct-processor.version>1.5.5.Final</mapstruct-processor.version>
+		<liquibase-core.version>4.27.0</liquibase-core.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -81,6 +82,11 @@
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct-processor</artifactId>
 			<version>${mapstruct-processor.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>${liquibase-core.version}</version>
 		</dependency>
 	</dependencies>
 

@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-season
+      author: Anastasia
+      changes:
+        - loadData:
+            tableName: season
+            file: db/changelog/changeset/season-data.csv
+            columns:
+              - column:
+                  header: season_name
+                  name: season_name
+                  type: text

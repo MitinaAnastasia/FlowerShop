@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-provider
+      author: Anastasia
+      changes:
+        - loadData:
+            tableName: provider
+            file: db/changelog/changeset/provider-data.csv
+            columns:
+              - column:
+                  header: provider_name
+                  name: provider_name
+                  type: text
+              - column:
+                  header: provider_address
+                  name: provider_address
+                  type: text
+              - column:
+                  header: provider_phone
+                  name: provider_phone
+                  type: text

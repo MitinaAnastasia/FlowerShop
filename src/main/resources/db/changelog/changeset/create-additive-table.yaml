@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-additive
+      author: Anastasia
+      changes:
+        - createTable:
+            tableName: additive
+            ifNotExists: true
+            columns:
+              - column:
+                  name: additive_id
+                  type: serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: additive_name
+                  type: text
+                  constraints:
+                    nullable: false

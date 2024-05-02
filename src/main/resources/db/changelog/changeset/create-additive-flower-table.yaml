@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-additive-flower
+      author: Anastasia
+      changes:
+        - createTable:
+            tableName: additive_flower
+            ifNotExists: true
+            columns:
+              - column:
+                  name: additive_id_fk
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    foreignKeyName: additive_fk
+                    referencedTableName: additive
+                    referencedColumnNames: additive_id
+                    nullable: false
+              - column:
+                  name: flower_id_fk
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    foreignKeyName: flower_fk_add
+                    referencedTableName: flower
+                    referencedColumnNames: flower_id
+                    nullable: false
