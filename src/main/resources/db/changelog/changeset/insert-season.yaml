@@ -3,27 +3,11 @@ databaseChangeLog:
       id: insert-season
       author: Anastasia
       changes:
-        - insert:
+        - loadData:
             tableName: season
+            file: db/changelog/changeset/season-data.csv
             columns:
               - column:
+                  header: season_name
                   name: season_name
-                  value: "лето"
-        - insert:
-            tableName: season
-            columns:
-              - column:
-                  name: season_name
-                  value: "осень"
-        - insert:
-            tableName: season
-            columns:
-              - column:
-                  name: season_name
-                  value: "зима"
-        - insert:
-            tableName: season
-            columns:
-              - column:
-                  name: season_name
-                  value: "весна"
+                  type: text
