@@ -2,6 +2,8 @@ package ru.neoflex.flowershop.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,164 +31,145 @@ public class FlowerServiceImplTest {
     @Mock
     private FlowerMapper flowerMapper;
 
-    FlowerDTO dataFlowerDTO(Long id, String name, BigDecimal cost, Integer height, Integer periodInWater, Season season, Provider provider){
-        FlowerDTO flowerDTO= new FlowerDTO();
-        flowerDTO.setId(id);
-        flowerDTO.setName(name);
-        flowerDTO.setCost(cost);
-        flowerDTO.setHeight(height);
-        flowerDTO.setPeriodInWater(periodInWater);
-        flowerDTO.setSeason(season);
-        flowerDTO.setProvider(provider);
-        return flowerDTO;
+    Flower flowerIrisLilac;
+    Flower flowerAnother;
+    FlowerDTO flowerDTOIrisLilac;
+    FlowerDTO flowerDTOAnother;
+    Season season;
+    Provider provider;
+
+    @BeforeAll
+    static void prepareDataSeasonAndProvider(){
+        Season season = new Season();
+        season.setName("весна");
+        Provider provider = new Provider();
+        provider.setName("цветы по рф");
+    }
+
+    @BeforeEach
+    void prepareDataFlower() {
+        flowerIrisLilac = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(110),
+                40, null, 14, season, provider, null);
+
+        flowerAnother = new Flower(2L, "ирис сиреневый", BigDecimal.valueOf(110),
+                45, null, 14, season, provider, null);
+    }
+
+    @BeforeEach
+    void prepareDataFlowerDTO(){
+        flowerDTOIrisLilac= new FlowerDTO();
+        flowerDTOIrisLilac.setId(1L);
+        flowerDTOIrisLilac.setName("ирис сиреневый");
+        flowerDTOIrisLilac.setCost(BigDecimal.valueOf(110));
+        flowerDTOIrisLilac.setHeight(40);
+        flowerDTOIrisLilac.setPeriodInWater(14);
+        flowerDTOIrisLilac.setSeason(season);
+        flowerDTOIrisLilac.setProvider(provider);
+
+        flowerDTOAnother= new FlowerDTO();
+        flowerDTOAnother.setId(2L);
+        flowerDTOAnother.setName("ирис сиреневый");
+        flowerDTOAnother.setCost(BigDecimal.valueOf(110));
+        flowerDTOAnother.setHeight(45);
+        flowerDTOAnother.setPeriodInWater(14);
+        flowerDTOAnother.setSeason(season);
+        flowerDTOAnother.setProvider(provider);
     }
 
     @Test
     void testFindAll_Success(){
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("ирисы по рф");
+        flowerAnother.setName("ирис желтый");
+        flowerDTOAnother.setName("ирис желтый");
 
-        Flower flowerIrisLilac = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(110),
-                40, null, 14, season, provider, null);
-
-        FlowerDTO flowerDTOIrisLilac = dataFlowerDTO(1L, "ирис сиреневый", BigDecimal.valueOf(110),
-                40,14, season, provider);
-
-        Flower flowerIrisYellow = new Flower(2L, "ирис желтый", BigDecimal.valueOf(110),
-                45, null, 14, season, provider, null);
-
-        FlowerDTO flowerDTOIrisYellow = dataFlowerDTO(2L, "ирис желтый", BigDecimal.valueOf(110),
-                45, 14, season, provider);
-
-        List<Flower> flowers = List.of(flowerIrisLilac, flowerIrisYellow);
-        List<FlowerDTO> flowerDTOS = List.of(flowerDTOIrisLilac, flowerDTOIrisYellow);
+        List<Flower> flowers = List.of(flowerIrisLilac, flowerAnother);
+        List<FlowerDTO> flowerDTOS = List.of(flowerDTOIrisLilac, flowerDTOAnother);
 
         Mockito.when(flowerRepository.findAll()).thenReturn(flowers);
         Mockito.when(flowerMapper.fromListFlowerToListFlowerDTO(flowers)).thenReturn(flowerDTOS);
 
-        List<FlowerDTO> result = flowerService.findAll();
-        Assertions.assertEquals(flowerDTOS, result);
+        List<FlowerDTO> actual = flowerService.findAll();
+        List<FlowerDTO> expected = flowerDTOS;
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertEquals(2, actual.size());
+        Assertions.assertEquals(1L, actual.get(0).getId());
+        Assertions.assertEquals(2L, actual.get(1).getId());
+        Assertions.assertEquals(expected.get(0), actual.get(0));
     }
 
     @Test
     void testFindAllByName_Success(){
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("ирисы по рф");
-
         String name = "ирис сиреневый";
 
-        Flower flowerIrisLilac = new Flower(1L, name, BigDecimal.valueOf(110),
-                40, null, 14, season, provider, null);
-
-        FlowerDTO flowerDTOIrisLilac = dataFlowerDTO(1L, name, BigDecimal.valueOf(110),
-                40,14, season, provider);
-
-        Flower flowerIrisLilacAnother = new Flower(2L, name, BigDecimal.valueOf(120),
-                45, null, 14, season, provider, null);
-
-        FlowerDTO flowerDTOIrisLilacAnother = dataFlowerDTO(2L, name, BigDecimal.valueOf(120),
-                45,14, season, provider);
-
-        List<Flower> flowers = List.of(flowerIrisLilac, flowerIrisLilacAnother);
-        List<FlowerDTO> flowerDTOS = List.of(flowerDTOIrisLilac, flowerDTOIrisLilacAnother);
+        List<Flower> flowers = List.of(flowerIrisLilac, flowerAnother);
+        List<FlowerDTO> flowerDTOS = List.of(flowerDTOIrisLilac, flowerDTOAnother);
 
         Mockito.when(flowerRepository.findAllByName(name)).thenReturn(flowers);
         Mockito.when(flowerMapper.fromListFlowerToListFlowerDTO(flowers)).thenReturn(flowerDTOS);
 
-        List<FlowerDTO> result = flowerService.findAllByName(name);
-        Assertions.assertEquals(flowerDTOS, result);
+        List<FlowerDTO> actual = flowerService.findAllByName(name);
+        List<FlowerDTO> expected = flowerDTOS;
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertEquals(2, actual.size());
+        Assertions.assertEquals(1L, actual.get(0).getId());
+        Assertions.assertEquals(2L, actual.get(1).getId());
+        Assertions.assertEquals(expected.get(0), actual.get(0));
     }
 
     @Test
     void testFindAllByCost_Success(){
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("цветы оптом");
-
         BigDecimal cost = BigDecimal.valueOf(110);
+        flowerAnother.setName("нарцисс белый");
+        flowerDTOAnother.setName("нарцисс белый");
 
-        Flower flowerIrisRed = new Flower(1L, "ирис бордовый", cost,
-                40, null, 14, season, provider, null);
-
-        FlowerDTO flowerDTOIrisRed = dataFlowerDTO(1L, "ирис бордовый", cost,
-                40,14, season, provider);
-
-        Flower flowerNarcissusWhite = new Flower(2L, "нарцисс белый", cost,
-                40, null, 7, season, provider, null);
-
-        FlowerDTO flowerDTONarcissusWhite = dataFlowerDTO(2L, "нарцисс белый", cost,
-                40,7, season, provider);
-
-        List<Flower> flowers = List.of(flowerIrisRed, flowerNarcissusWhite);
-        List<FlowerDTO> flowerDTOS = List.of(flowerDTOIrisRed, flowerDTONarcissusWhite);
+        List<Flower> flowers = List.of(flowerIrisLilac, flowerAnother);
+        List<FlowerDTO> flowerDTOS = List.of(flowerDTOIrisLilac, flowerDTOAnother);
 
         Mockito.when(flowerRepository.findAllByCost(cost)).thenReturn(flowers);
         Mockito.when(flowerMapper.fromListFlowerToListFlowerDTO(flowers)).thenReturn(flowerDTOS);
 
-        List<FlowerDTO> result = flowerService.findAllByCost(cost);
-        Assertions.assertEquals(flowerDTOS, result);
+        List<FlowerDTO> actual = flowerService.findAllByCost(cost);
+        List<FlowerDTO> expected = flowerDTOS;
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertEquals(2, actual.size());
+        Assertions.assertEquals(1L, actual.get(0).getId());
+        Assertions.assertEquals(2L, actual.get(1).getId());
+        Assertions.assertEquals(expected.get(0), actual.get(0));
     }
 
     @Test
     void testInsertFlower_Success(){
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("цветы оптом");
+        Mockito.when(flowerMapper.fromFlowerDTOToFlower(flowerDTOIrisLilac)).thenReturn(flowerIrisLilac);
+        Mockito.when(flowerMapper.fromFlowerToFlowerDTO(flowerIrisLilac)).thenReturn(flowerDTOIrisLilac);
+        Mockito.when(flowerRepository.saveAndFlush(flowerIrisLilac)).thenReturn(flowerIrisLilac);
 
-        Flower flowerIrisRed = new Flower(1L, "ирис бордовый", BigDecimal.valueOf(110),
-                40, null, 14, season, provider, null);
-
-        FlowerDTO flowerDTOIrisRed = dataFlowerDTO(1L, "ирис бордовый", BigDecimal.valueOf(110),
-                40,14, season, provider);
-
-        Mockito.when(flowerMapper.fromFlowerDTOToFlower(flowerDTOIrisRed)).thenReturn(flowerIrisRed);
-        Mockito.when(flowerMapper.fromFlowerToFlowerDTO(flowerIrisRed)).thenReturn(flowerDTOIrisRed);
-        Mockito.when(flowerRepository.saveAndFlush(flowerIrisRed)).thenReturn(flowerIrisRed);
-
-        FlowerDTO result = flowerService.insertFlower(flowerDTOIrisRed);
-        Assertions.assertEquals(flowerDTOIrisRed, result);
+        FlowerDTO actual = flowerService.insertFlower(flowerDTOIrisLilac);
+        FlowerDTO expected = flowerDTOIrisLilac;
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     void testUpdateFlower_Success(){
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("цветы оптом");
+        flowerDTOAnother.setId(1L);
 
-        Flower flowerIrisRed = new Flower(1L, "ирис бордовый", BigDecimal.valueOf(110),
-                40, null, 14, season, provider, null);
+        Mockito.when(flowerRepository.findById(flowerDTOAnother.getId())).thenReturn(Optional.of(flowerIrisLilac));
+        flowerIrisLilac.setHeight(45);
+        Mockito.when(flowerRepository.save(flowerIrisLilac)).thenReturn(flowerIrisLilac);
+        Mockito.when(flowerMapper.fromFlowerToFlowerDTO(flowerIrisLilac)).thenReturn(flowerDTOAnother);
 
-        FlowerDTO flowerDTOIrisRedUpdate = dataFlowerDTO(1L, "ирис бордовый", BigDecimal.valueOf(110),
-                45,14, season, provider);
-
-        Mockito.when(flowerRepository.findById(flowerDTOIrisRedUpdate.getId())).thenReturn(Optional.of(flowerIrisRed));
-        flowerIrisRed.setHeight(45);
-        Mockito.when(flowerRepository.save(flowerIrisRed)).thenReturn(flowerIrisRed);
-        Mockito.when(flowerMapper.fromFlowerToFlowerDTO(flowerIrisRed)).thenReturn(flowerDTOIrisRedUpdate);
-
-        FlowerDTO result = flowerService.updateFlower(flowerDTOIrisRedUpdate);
-        Assertions.assertEquals(flowerDTOIrisRedUpdate, result);
+        FlowerDTO actual = flowerService.updateFlower(flowerDTOAnother);
+        FlowerDTO expected = flowerDTOAnother;
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     void testUpdateFlower_NotFound(){
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("цветы оптом");
+        flowerDTOAnother.setId(1L);
 
-        FlowerDTO flowerDTOIrisRedUpdate = dataFlowerDTO(1L, "ирис бордовый", BigDecimal.valueOf(110),
-                45,14, season, provider);
+        Mockito.when(flowerRepository.findById(flowerDTOAnother.getId())).thenThrow(new EntityNotFoundException());
 
-        Mockito.when(flowerRepository.findById(flowerDTOIrisRedUpdate.getId())).thenThrow(EntityNotFoundException.class);
-
-        Assertions.assertThrows(EntityNotFoundException.class, () -> flowerService.updateFlower(flowerDTOIrisRedUpdate));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> flowerService.updateFlower(flowerDTOAnother));
     }
 }

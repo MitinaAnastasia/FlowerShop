@@ -2,6 +2,8 @@ package ru.neoflex.flowershop.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,59 +33,85 @@ public class BouquetServiceImplTest {
     @Mock
     private BouquetMapper bouquetMapper;
 
-    BouquetDTO dataFlowerDTO(Long id, String name, Integer numberOfFlowers, BigDecimal cost, Flower flower) {
-        BouquetDTO bouquetDTO = new BouquetDTO();
-        bouquetDTO.setId(id);
-        bouquetDTO.setName(name);
-        bouquetDTO.setNumberOfFlowers(numberOfFlowers);
-        bouquetDTO.setCost(cost);
-        bouquetDTO.setFlower(flower);
-        return bouquetDTO;
-    }
-
-    @Test
-    void testFindAll_Success() {
+    static Flower flower;
+    static Flower flowerAnother;
+    Bouquet bouquetFairyTale;
+    Bouquet bouquetFairyTaleSmall;
+    static Bouquet bouquetFairyTaleYellow;
+    BouquetDTO bouquetDTOFairyTale;
+    BouquetDTO bouquetDTOFairyTaleSmall;
+    static BouquetDTO bouquetDTOFairyTaleYellow;
+    @BeforeAll
+    static void prepareDataFlower(){
         Season season = new Season();
         season.setName("весна");
         Provider provider = new Provider();
         provider.setName("ирисы по рф");
 
-        Flower flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
+        flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
                 40, null, 14, season, provider, null);
 
-        Bouquet bouquetFairyTale = new Bouquet(1L, "Сказка", 11, BigDecimal.valueOf(1100), flower);
-        BouquetDTO bouquetDTOFairyTale = dataFlowerDTO(1L, "Сказка", 11, BigDecimal.valueOf(1100), flower);
+        flowerAnother = new Flower(2L, "ирис желтый", BigDecimal.valueOf(100),
+                40, null, 14, season, provider, null);
+    }
 
-        Bouquet bouquetFairyTaleSmall = new Bouquet(2L, "Сказка малая", 3, BigDecimal.valueOf(300), flower);
-        BouquetDTO bouquetDTOFairyTaleSmall = dataFlowerDTO(2L, "Сказка малая", 3, BigDecimal.valueOf(300), flower);
+    @BeforeAll
+    static void prepareDataFairyTaleYellow(){
+        bouquetFairyTaleYellow = new Bouquet(
+                2L, "Сказка желтая", 11, BigDecimal.valueOf(1100), flowerAnother);
 
+        bouquetDTOFairyTaleYellow = new BouquetDTO();
+        bouquetDTOFairyTaleYellow.setId(2L);
+        bouquetDTOFairyTaleYellow.setName("Сказка желтая");
+        bouquetDTOFairyTaleYellow.setNumberOfFlowers(11);
+        bouquetDTOFairyTaleYellow.setCost(BigDecimal.valueOf(1100));
+        bouquetDTOFairyTaleYellow.setFlower(flowerAnother);
+    }
+
+    @BeforeEach
+    void prepareDataBouquet(){
+        bouquetFairyTale = new Bouquet(1L, "Сказка", 11, BigDecimal.valueOf(1100), flower);
+        bouquetFairyTaleSmall = new Bouquet(2L, "Сказка", 3, BigDecimal.valueOf(300), flower);
+    }
+
+    @BeforeEach
+    void prepareDataBouquetDTO(){
+        bouquetDTOFairyTale = new BouquetDTO();
+        bouquetDTOFairyTale.setId(1L);
+        bouquetDTOFairyTale.setName("Сказка");
+        bouquetDTOFairyTale.setNumberOfFlowers(11);
+        bouquetDTOFairyTale.setCost(BigDecimal.valueOf(1100));
+        bouquetDTOFairyTale.setFlower(flower);
+
+        bouquetDTOFairyTaleSmall = new BouquetDTO();
+        bouquetDTOFairyTaleSmall.setId(2L);
+        bouquetDTOFairyTaleSmall.setName("Сказка");
+        bouquetDTOFairyTaleSmall.setNumberOfFlowers(3);
+        bouquetDTOFairyTaleSmall.setCost(BigDecimal.valueOf(300));
+        bouquetDTOFairyTaleSmall.setFlower(flower);
+    }
+
+    @Test
+    void testFindAll_Success() {
         List<Bouquet> bouquetList = List.of(bouquetFairyTale, bouquetFairyTaleSmall);
         List<BouquetDTO> bouquetDTOList = List.of(bouquetDTOFairyTale, bouquetDTOFairyTaleSmall);
 
         Mockito.when(bouquetRepository.findAll()).thenReturn(bouquetList);
         Mockito.when(bouquetMapper.fromListBouquetToListBouquetDTO(bouquetList)).thenReturn(bouquetDTOList);
 
-        List<BouquetDTO> result = bouquetService.findAll();
-        Assertions.assertEquals(bouquetDTOList, result);
+        List<BouquetDTO> actual = bouquetService.findAll();
+        List<BouquetDTO> expected = bouquetDTOList;
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertEquals(2, actual.size());
+        Assertions.assertEquals(1L, actual.get(0).getId());
+        Assertions.assertEquals(2L, actual.get(1).getId());
+        Assertions.assertEquals(expected.get(0), actual.get(0));
     }
 
     @Test
     void testFindAllByName_Success() {
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("ирисы по рф");
-
-        Flower flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
-                40, null, 14, season, provider, null);
-
         String name = "Сказка";
-
-        Bouquet bouquetFairyTale = new Bouquet(1L, name, 11, BigDecimal.valueOf(1100), flower);
-        BouquetDTO bouquetDTOFairyTale = dataFlowerDTO(1L, name, 11, BigDecimal.valueOf(1100), flower);
-
-        Bouquet bouquetFairyTaleSmall = new Bouquet(2L, name, 3, BigDecimal.valueOf(300), flower);
-        BouquetDTO bouquetDTOFairyTaleSmall = dataFlowerDTO(2L, name, 3, BigDecimal.valueOf(300), flower);
 
         List<Bouquet> bouquetList = List.of(bouquetFairyTale, bouquetFairyTaleSmall);
         List<BouquetDTO> bouquetDTOList = List.of(bouquetDTOFairyTale, bouquetDTOFairyTaleSmall);
@@ -91,29 +119,19 @@ public class BouquetServiceImplTest {
         Mockito.when(bouquetRepository.findAllByName(name)).thenReturn(bouquetList);
         Mockito.when(bouquetMapper.fromListBouquetToListBouquetDTO(bouquetList)).thenReturn(bouquetDTOList);
 
-        List<BouquetDTO> result = bouquetService.findAllByName(name);
-        Assertions.assertEquals(bouquetDTOList, result);
+        List<BouquetDTO> actual = bouquetService.findAllByName(name);
+        List<BouquetDTO> expected = bouquetDTOList;
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertEquals(2, actual.size());
+        Assertions.assertEquals(1L, actual.get(0).getId());
+        Assertions.assertEquals(2L, actual.get(1).getId());
+        Assertions.assertEquals(expected.get(0), actual.get(0));
     }
 
     @Test
     void testFindAllByCost_Success() {
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("ирисы по рф");
-
-        Flower flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
-                40, null, 14, season, provider, null);
-
-        Flower flowerAnother = new Flower(2L, "ирис желтый", BigDecimal.valueOf(100),
-                45, null, 14, season, provider, null);
         BigDecimal cost = BigDecimal.valueOf(1100);
-
-        Bouquet bouquetFairyTale = new Bouquet(1L, "Сказка", 11, cost, flower);
-        BouquetDTO bouquetDTOFairyTale = dataFlowerDTO(1L, "Сказка", 11, cost, flower);
-
-        Bouquet bouquetFairyTaleYellow = new Bouquet(2L, "Сказка желтая", 11, cost, flowerAnother);
-        BouquetDTO bouquetDTOFairyTaleYellow = dataFlowerDTO(2L, "Сказка желтая", 11, cost, flowerAnother);
 
         List<Bouquet> bouquetList = List.of(bouquetFairyTale, bouquetFairyTaleYellow);
         List<BouquetDTO> bouquetDTOList = List.of(bouquetDTOFairyTale, bouquetDTOFairyTaleYellow);
@@ -121,102 +139,69 @@ public class BouquetServiceImplTest {
         Mockito.when(bouquetRepository.findAllByCost(cost)).thenReturn(bouquetList);
         Mockito.when(bouquetMapper.fromListBouquetToListBouquetDTO(bouquetList)).thenReturn(bouquetDTOList);
 
-        List<BouquetDTO> result = bouquetService.findAllByCost(cost);
-        Assertions.assertEquals(bouquetDTOList, result);
+        List<BouquetDTO> actual = bouquetService.findAllByCost(cost);
+        List<BouquetDTO> expected = bouquetDTOList;
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertEquals(2, actual.size());
+        Assertions.assertEquals(1L, actual.get(0).getId());
+        Assertions.assertEquals(2L, actual.get(1).getId());
+        Assertions.assertEquals(expected.get(0), actual.get(0));
     }
     @Test
     void testFindAllByFlowerId_Success() {
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("ирисы по рф");
-
-        Flower flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
-                40, null, 14, season, provider, null);
-
-        Bouquet bouquetFairyTale = new Bouquet(1L, "Сказка", 11, BigDecimal.valueOf(1100), flower);
-        BouquetDTO bouquetDTOFairyTale = dataFlowerDTO(1L, "Сказка", 11, BigDecimal.valueOf(1100), flower);
-
-        Bouquet bouquetFairyTaleSmall = new Bouquet(2L, "Сказка малая", 3, BigDecimal.valueOf(300), flower);
-        BouquetDTO bouquetDTOFairyTaleSmall = dataFlowerDTO(2L, "Сказка малая", 3, BigDecimal.valueOf(300), flower);
-
         List<Bouquet> bouquetList = List.of(bouquetFairyTale, bouquetFairyTaleSmall);
         List<BouquetDTO> bouquetDTOList = List.of(bouquetDTOFairyTale, bouquetDTOFairyTaleSmall);
 
         Mockito.when(bouquetRepository.findAllByFlowerId(flower.getId())).thenReturn(bouquetList);
         Mockito.when(bouquetMapper.fromListBouquetToListBouquetDTO(bouquetList)).thenReturn(bouquetDTOList);
 
-        List<BouquetDTO> result = bouquetService.findAllByFlowerId(flower.getId());
-        Assertions.assertEquals(bouquetDTOList, result);
+        List<BouquetDTO> actual = bouquetService.findAllByFlowerId(flower.getId());
+        List<BouquetDTO> expected = bouquetDTOList;
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertEquals(2, actual.size());
+        Assertions.assertEquals(1L, actual.get(0).getId());
+        Assertions.assertEquals(2L, actual.get(1).getId());
+        Assertions.assertEquals(expected.get(0), actual.get(0));
     }
 
     @Test
     void testInsertBouquet_Success(){
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("ирисы по рф");
-        Flower flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
-                40, null, 14, season, provider, null);
-
-        Bouquet bouquetFairyTale = new Bouquet(1L, "Сказка", 11, BigDecimal.valueOf(1100), flower);
-        BouquetDTO bouquetDTOFairyTale = dataFlowerDTO(1L, "Сказка", 11, BigDecimal.valueOf(1100), flower);
-
         Mockito.when(bouquetMapper.fromBouquetDTOToBouquet(bouquetDTOFairyTale)).thenReturn(bouquetFairyTale);
         Mockito.when(bouquetMapper.fromBouquetToBouquetDTO(bouquetFairyTale)).thenReturn(bouquetDTOFairyTale);
         Mockito.when(bouquetRepository.saveAndFlush(bouquetFairyTale)).thenReturn(bouquetFairyTale);
 
-        BouquetDTO result = bouquetService.insertBouquet(bouquetDTOFairyTale);
-        Assertions.assertEquals(bouquetDTOFairyTale, result);
+        BouquetDTO actual = bouquetService.insertBouquet(bouquetDTOFairyTale);
+        BouquetDTO expected = bouquetDTOFairyTale;
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     void testUpdateBouquet_Success(){
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("ирисы по рф");
-        Flower flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
-                40, null, 14, season, provider, null);
+        bouquetFairyTale.setName("Сказка сиреневая");
 
-        Bouquet bouquetFairyTale = new Bouquet(1L, "Сказка сиреневая", 11, BigDecimal.valueOf(1100), flower);
-        BouquetDTO bouquetDTOFairyTaleUpdate = dataFlowerDTO(1L, "Сказка", 11, BigDecimal.valueOf(1100), flower);
-
-        Mockito.when(bouquetRepository.findById(bouquetDTOFairyTaleUpdate.getId())).thenReturn(Optional.of(bouquetFairyTale));
+        Mockito.when(bouquetRepository.findById(bouquetDTOFairyTale.getId())).thenReturn(Optional.of(bouquetFairyTale));
         bouquetFairyTale.setName("Сказка");
         Mockito.when(bouquetRepository.save(bouquetFairyTale)).thenReturn(bouquetFairyTale);
-        Mockito.when(bouquetMapper.fromBouquetToBouquetDTO(bouquetFairyTale)).thenReturn(bouquetDTOFairyTaleUpdate);
+        Mockito.when(bouquetMapper.fromBouquetToBouquetDTO(bouquetFairyTale)).thenReturn(bouquetDTOFairyTale);
 
-        BouquetDTO result = bouquetService.updateBouquet(bouquetDTOFairyTaleUpdate);
-        Assertions.assertEquals(bouquetDTOFairyTaleUpdate, result);
+        BouquetDTO actual = bouquetService.updateBouquet(bouquetDTOFairyTale);
+        BouquetDTO expected = bouquetDTOFairyTale;
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     void testUpdateBouquet_NotFound(){
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("ирисы по рф");
-        Flower flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
-                40, null, 14, season, provider, null);
+        bouquetFairyTale.setName("Сказка сиреневая");
 
-        BouquetDTO bouquetDTOFairyTaleUpdate = dataFlowerDTO(1L, "Сказка", 11, BigDecimal.valueOf(1100), flower);
-
-        Mockito.when(bouquetRepository.findById(bouquetDTOFairyTaleUpdate.getId())).thenThrow(EntityNotFoundException.class);
-        Assertions.assertThrows(EntityNotFoundException.class, () -> bouquetService.updateBouquet(bouquetDTOFairyTaleUpdate));
+        Mockito.when(bouquetRepository.findById(bouquetDTOFairyTale.getId())).thenThrow(EntityNotFoundException.class);
+        Assertions.assertThrows(EntityNotFoundException.class, () -> bouquetService.updateBouquet(bouquetDTOFairyTale));
     }
 
     @Test
     void testDeleteBouquet_Success(){
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("ирисы по рф");
-        Flower flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
-                40, null, 14, season, provider, null);
-
         Long id = 1L;
-        Bouquet bouquetFairyTale = new Bouquet(id, "Сказка", 11, BigDecimal.valueOf(1100), flower);
 
         Mockito.when(bouquetRepository.findById(id)).thenReturn(Optional.of(bouquetFairyTale));
 

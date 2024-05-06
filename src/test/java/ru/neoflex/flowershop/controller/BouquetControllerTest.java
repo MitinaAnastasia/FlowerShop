@@ -1,6 +1,9 @@
 package ru.neoflex.flowershop.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,140 +29,159 @@ public class BouquetControllerTest {
     @Mock
     private BouquetService bouquetService;
 
-    BouquetDTO dataFlowerDTO(Long id, String name, Integer numberOfFlowers, BigDecimal cost, Flower flower) {
-        BouquetDTO bouquetDTO = new BouquetDTO();
-        bouquetDTO.setId(id);
-        bouquetDTO.setName(name);
-        bouquetDTO.setNumberOfFlowers(numberOfFlowers);
-        bouquetDTO.setCost(cost);
-        bouquetDTO.setFlower(flower);
-        return bouquetDTO;
-    }
-
-    @Test
-    void testFindAll_Success(){
+    static Flower flower;
+    static Flower flowerAnother;
+    BouquetDTO bouquetDTOFairyTale;
+    BouquetDTO bouquetDTOFairyTaleSmall;
+    static BouquetDTO bouquetDTOFairyTaleYellow;
+    @BeforeAll
+    static void prepareDataFlower(){
         Season season = new Season();
         season.setName("весна");
         Provider provider = new Provider();
         provider.setName("ирисы по рф");
 
-        Flower flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
+        flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
                 40, null, 14, season, provider, null);
+        flowerAnother = new Flower(2L, "ирис желтый", BigDecimal.valueOf(100),
+                40, null, 14, season, provider, null);
+    }
 
-        BouquetDTO bouquetDTOFairyTale = dataFlowerDTO(1L, "Сказка", 11, BigDecimal.valueOf(1100), flower);
-        BouquetDTO bouquetDTOFairyTaleSmall = dataFlowerDTO(2L, "Сказка малая", 3, BigDecimal.valueOf(300), flower);
+    @BeforeAll
+    static void prepareDataFairyTaleYellow(){
+        bouquetDTOFairyTaleYellow = new BouquetDTO();
+        bouquetDTOFairyTaleYellow.setId(2L);
+        bouquetDTOFairyTaleYellow.setName("Сказка желтая");
+        bouquetDTOFairyTaleYellow.setNumberOfFlowers(11);
+        bouquetDTOFairyTaleYellow.setCost(BigDecimal.valueOf(1100));
+        bouquetDTOFairyTaleYellow.setFlower(flowerAnother);
+    }
+
+    @BeforeEach
+    void prepareDataBouquetDTO(){
+        bouquetDTOFairyTale = new BouquetDTO();
+        bouquetDTOFairyTale.setId(1L);
+        bouquetDTOFairyTale.setName("Сказка");
+        bouquetDTOFairyTale.setNumberOfFlowers(11);
+        bouquetDTOFairyTale.setCost(BigDecimal.valueOf(1100));
+        bouquetDTOFairyTale.setFlower(flower);
+
+        bouquetDTOFairyTaleSmall = new BouquetDTO();
+        bouquetDTOFairyTaleSmall.setId(2L);
+        bouquetDTOFairyTaleSmall.setName("Сказка");
+        bouquetDTOFairyTaleSmall.setNumberOfFlowers(3);
+        bouquetDTOFairyTaleSmall.setCost(BigDecimal.valueOf(300));
+        bouquetDTOFairyTaleSmall.setFlower(flower);
+    }
+
+    @Test
+    void testFindAll_Success(){
         List<BouquetDTO> bouquetDTOList = List.of(bouquetDTOFairyTale, bouquetDTOFairyTaleSmall);
 
         Mockito.when(bouquetService.findAll()).thenReturn(bouquetDTOList);
 
         ResponseEntity<List<BouquetDTO>> result = bouquetController.findAll();
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
-        Assertions.assertEquals(bouquetDTOList, result.getBody());
+
+        List<BouquetDTO> actual = result.getBody();
+        List<BouquetDTO> expected = bouquetDTOList;
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertEquals(2, actual.size());
+        Assertions.assertEquals(1L, actual.get(0).getId());
+        Assertions.assertEquals(2L, actual.get(1).getId());
+        Assertions.assertEquals(expected.get(0), actual.get(0));
     }
 
     @Test
     void testFindAllByName_Success(){
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("ирисы по рф");
-
-        Flower flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
-                40, null, 14, season, provider, null);
-
         String name = "Сказка";
 
-        BouquetDTO bouquetDTOFairyTale = dataFlowerDTO(1L, name, 11, BigDecimal.valueOf(1100), flower);
-        BouquetDTO bouquetDTOFairyTaleSmall = dataFlowerDTO(2L, name, 3, BigDecimal.valueOf(300), flower);
         List<BouquetDTO> bouquetDTOList = List.of(bouquetDTOFairyTale, bouquetDTOFairyTaleSmall);
 
         Mockito.when(bouquetService.findAllByName(name)).thenReturn(bouquetDTOList);
 
         ResponseEntity<List<BouquetDTO>> result = bouquetController.findAllByName(name);
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
-        Assertions.assertEquals(bouquetDTOList, result.getBody());
+
+        List<BouquetDTO> actual = result.getBody();
+        List<BouquetDTO> expected = bouquetDTOList;
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertEquals(2, actual.size());
+        Assertions.assertEquals(1L, actual.get(0).getId());
+        Assertions.assertEquals(2L, actual.get(1).getId());
+        Assertions.assertEquals(expected.get(0), actual.get(0));
     }
 
     @Test
     void testFindAllByCost_Success(){
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("ирисы по рф");
-
-        Flower flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
-                40, null, 14, season, provider, null);
-
-        Flower flowerAnother = new Flower(2L, "ирис желтый", BigDecimal.valueOf(100),
-                45, null, 14, season, provider, null);
         BigDecimal cost = BigDecimal.valueOf(1100);
 
-        BouquetDTO bouquetDTOFairyTale = dataFlowerDTO(1L, "Сказка", 11, cost, flower);
-        BouquetDTO bouquetDTOFairyTaleYellow = dataFlowerDTO(2L, "Сказка желтая", 11, cost, flowerAnother);
         List<BouquetDTO> bouquetDTOList = List.of(bouquetDTOFairyTale, bouquetDTOFairyTaleYellow);
 
         Mockito.when(bouquetService.findAllByCost(cost)).thenReturn(bouquetDTOList);
 
         ResponseEntity<List<BouquetDTO>> result = bouquetController.findAllByCost(cost);
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
-        Assertions.assertEquals(bouquetDTOList, result.getBody());
+
+        List<BouquetDTO> actual = result.getBody();
+        List<BouquetDTO> expected = bouquetDTOList;
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertEquals(2, actual.size());
+        Assertions.assertEquals(1L, actual.get(0).getId());
+        Assertions.assertEquals(2L, actual.get(1).getId());
+        Assertions.assertEquals(expected.get(0), actual.get(0));
     }
 
     @Test
     void testFindAllByFlowerId_Success(){
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("ирисы по рф");
-
-        Flower flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
-                40, null, 14, season, provider, null);
-
-        BouquetDTO bouquetDTOFairyTale = dataFlowerDTO(1L, "Сказка", 11, BigDecimal.valueOf(1100), flower);
-        BouquetDTO bouquetDTOFairyTaleSmall = dataFlowerDTO(2L, "Сказка малая", 3, BigDecimal.valueOf(300), flower);
         List<BouquetDTO> bouquetDTOList = List.of(bouquetDTOFairyTale, bouquetDTOFairyTaleSmall);
 
         Mockito.when(bouquetService.findAllByFlowerId(flower.getId())).thenReturn(bouquetDTOList);
 
         ResponseEntity<List<BouquetDTO>> result = bouquetController.findAllByFlowerId(flower.getId());
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
-        Assertions.assertEquals(bouquetDTOList, result.getBody());
+
+        List<BouquetDTO> actual = result.getBody();
+        List<BouquetDTO> expected = bouquetDTOList;
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertEquals(2, actual.size());
+        Assertions.assertEquals(1L, actual.get(0).getId());
+        Assertions.assertEquals(2L, actual.get(1).getId());
+        Assertions.assertEquals(expected.get(0), actual.get(0));
     }
 
     @Test
     void testCreateBouquet_Success(){
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("ирисы по рф");
-        Flower flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
-                40, null, 14, season, provider, null);
-
-        BouquetDTO bouquetDTOFairyTale = dataFlowerDTO(1L, "Сказка", 11, BigDecimal.valueOf(1100), flower);
-
         Mockito.when(bouquetService.insertBouquet(bouquetDTOFairyTale)).thenReturn(bouquetDTOFairyTale);
 
         ResponseEntity<BouquetDTO> result = bouquetController.createBouquet(bouquetDTOFairyTale);
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
-        Assertions.assertEquals(bouquetDTOFairyTale, result.getBody());
+
+        BouquetDTO actual = result.getBody();
+        BouquetDTO expected = bouquetDTOFairyTale;
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     void testUpdateBouquet_Success(){
-        Season season = new Season();
-        season.setName("весна");
-        Provider provider = new Provider();
-        provider.setName("ирисы по рф");
-        Flower flower = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(100),
-                40, null, 14, season, provider, null);
+        Mockito.when(bouquetService.updateBouquet(bouquetDTOFairyTale)).thenReturn(bouquetDTOFairyTale);
 
-        BouquetDTO bouquetDTOFairyTaleUpdate = dataFlowerDTO(1L, "Сказка", 11, BigDecimal.valueOf(1100), flower);
-
-        Mockito.when(bouquetService.updateBouquet(bouquetDTOFairyTaleUpdate)).thenReturn(bouquetDTOFairyTaleUpdate);
-
-        ResponseEntity<BouquetDTO> result = bouquetController.updateBouquet(bouquetDTOFairyTaleUpdate);
+        ResponseEntity<BouquetDTO> result = bouquetController.updateBouquet(bouquetDTOFairyTale);
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
-        Assertions.assertEquals(bouquetDTOFairyTaleUpdate, result.getBody());
+
+        BouquetDTO actual = result.getBody();
+        BouquetDTO expected = bouquetDTOFairyTale;
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    void testUpdateBouquet_NotFound(){
+        Mockito.when(bouquetService.updateBouquet(bouquetDTOFairyTale)).thenThrow(new EntityNotFoundException());
+        Assertions.assertThrows(EntityNotFoundException.class, () -> bouquetController.updateBouquet(bouquetDTOFairyTale));
     }
 
     @Test
@@ -169,5 +191,12 @@ public class BouquetControllerTest {
         ResponseEntity<Void> result = bouquetController.deleteBouquet(id);
         Mockito.verify(bouquetService, Mockito.times(1)).deleteBouquet(id);
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void testDeleteBouquet_NotFound(){
+        Long id = 10L;
+        Mockito.doThrow(new EntityNotFoundException()).when(bouquetService).deleteBouquet(id);
+        Assertions.assertThrows(EntityNotFoundException.class, () -> bouquetController.deleteBouquet(id));
     }
 }
