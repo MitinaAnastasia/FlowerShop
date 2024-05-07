@@ -33,7 +33,7 @@ public class FlowerControllerTest {
     private FlowerDTO flowerDTOAnother;
 
     @BeforeAll
-    static void prepareDataSeasonAndProvider(){
+    public static void prepareDataSeasonAndProvider(){
         Season season = new Season();
         season.setName("весна");
         Provider provider = new Provider();
@@ -41,7 +41,7 @@ public class FlowerControllerTest {
     }
 
     @BeforeEach
-    void prepareDataFlowerDTO(){
+    public void prepareDataFlowerDTO(){
         flowerDTOIrisLilac= new FlowerDTO();
         flowerDTOIrisLilac.setId(1L);
         flowerDTOIrisLilac.setName("ирис сиреневый");

@@ -35,7 +35,7 @@ public class BouquetControllerTest {
     private BouquetDTO bouquetDTOFairyTaleSmall;
     private static BouquetDTO bouquetDTOFairyTaleYellow;
     @BeforeAll
-    static void prepareDataFlower(){
+    public static void prepareDataFlower(){
         Season season = new Season();
         season.setName("весна");
         Provider provider = new Provider();
@@ -48,7 +48,7 @@ public class BouquetControllerTest {
     }
 
     @BeforeAll
-    static void prepareDataFairyTaleYellow(){
+    public static void prepareDataFairyTaleYellow(){
         bouquetDTOFairyTaleYellow = new BouquetDTO();
         bouquetDTOFairyTaleYellow.setId(2L);
         bouquetDTOFairyTaleYellow.setName("Сказка желтая");
@@ -58,7 +58,7 @@ public class BouquetControllerTest {
     }
 
     @BeforeEach
-    void prepareDataBouquetDTO(){
+    public void prepareDataBouquetDTO(){
         bouquetDTOFairyTale = new BouquetDTO();
         bouquetDTOFairyTale.setId(1L);
         bouquetDTOFairyTale.setName("Сказка");

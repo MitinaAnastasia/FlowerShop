@@ -39,7 +39,7 @@ public class FlowerServiceImplTest {
     public Provider provider;
 
     @BeforeAll
-    static void prepareDataSeasonAndProvider(){
+    public static void prepareDataSeasonAndProvider(){
         Season season = new Season();
         season.setName("весна");
         Provider provider = new Provider();
@@ -47,7 +47,7 @@ public class FlowerServiceImplTest {
     }
 
     @BeforeEach
-    void prepareDataFlower() {
+    public void prepareDataFlower() {
         flowerIrisLilac = new Flower(1L, "ирис сиреневый", BigDecimal.valueOf(110),
                 40, null, 14, season, provider, null);
 
@@ -56,7 +56,7 @@ public class FlowerServiceImplTest {
     }
 
     @BeforeEach
-    void prepareDataFlowerDTO(){
+    public void prepareDataFlowerDTO(){
         flowerDTOIrisLilac= new FlowerDTO();
         flowerDTOIrisLilac.setId(1L);
         flowerDTOIrisLilac.setName("ирис сиреневый");

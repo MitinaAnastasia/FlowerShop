@@ -42,7 +42,7 @@ public class BouquetServiceImplTest {
     private BouquetDTO bouquetDTOFairyTaleSmall;
     private static BouquetDTO bouquetDTOFairyTaleYellow;
     @BeforeAll
-    static void prepareDataFlower(){
+    public static void prepareDataFlower(){
         Season season = new Season();
         season.setName("весна");
         Provider provider = new Provider();
@@ -56,7 +56,7 @@ public class BouquetServiceImplTest {
     }
 
     @BeforeAll
-    static void prepareDataFairyTaleYellow(){
+    public static void prepareDataFairyTaleYellow(){
         bouquetFairyTaleYellow = new Bouquet(
                 2L, "Сказка желтая", 11, BigDecimal.valueOf(1100), flowerAnother);
 
@@ -69,13 +69,13 @@ public class BouquetServiceImplTest {
     }
 
     @BeforeEach
-    void prepareDataBouquet(){
+    public void prepareDataBouquet(){
         bouquetFairyTale = new Bouquet(1L, "Сказка", 11, BigDecimal.valueOf(1100), flower);
         bouquetFairyTaleSmall = new Bouquet(2L, "Сказка", 3, BigDecimal.valueOf(300), flower);
     }
 
     @BeforeEach
-    void prepareDataBouquetDTO(){
+    public void prepareDataBouquetDTO(){
         bouquetDTOFairyTale = new BouquetDTO();
         bouquetDTOFairyTale.setId(1L);
         bouquetDTOFairyTale.setName("Сказка");
