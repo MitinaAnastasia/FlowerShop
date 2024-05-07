@@ -33,14 +33,14 @@ public class BouquetServiceImplTest {
     @Mock
     private BouquetMapper bouquetMapper;
 
-    static Flower flower;
-    static Flower flowerAnother;
-    Bouquet bouquetFairyTale;
-    Bouquet bouquetFairyTaleSmall;
-    static Bouquet bouquetFairyTaleYellow;
-    BouquetDTO bouquetDTOFairyTale;
-    BouquetDTO bouquetDTOFairyTaleSmall;
-    static BouquetDTO bouquetDTOFairyTaleYellow;
+    private static Flower flower;
+    private static Flower flowerAnother;
+    private Bouquet bouquetFairyTale;
+    private Bouquet bouquetFairyTaleSmall;
+    private static Bouquet bouquetFairyTaleYellow;
+    private BouquetDTO bouquetDTOFairyTale;
+    private BouquetDTO bouquetDTOFairyTaleSmall;
+    private static BouquetDTO bouquetDTOFairyTaleYellow;
     @BeforeAll
     static void prepareDataFlower(){
         Season season = new Season();

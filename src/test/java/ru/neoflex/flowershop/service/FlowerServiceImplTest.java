@@ -31,12 +31,12 @@ public class FlowerServiceImplTest {
     @Mock
     private FlowerMapper flowerMapper;
 
-    Flower flowerIrisLilac;
-    Flower flowerAnother;
-    FlowerDTO flowerDTOIrisLilac;
-    FlowerDTO flowerDTOAnother;
-    Season season;
-    Provider provider;
+    private Flower flowerIrisLilac;
+    private Flower flowerAnother;
+    private FlowerDTO flowerDTOIrisLilac;
+    private FlowerDTO flowerDTOAnother;
+    public Season season;
+    public Provider provider;
 
     @BeforeAll
     static void prepareDataSeasonAndProvider(){

@@ -29,11 +29,11 @@ public class BouquetControllerTest {
     @Mock
     private BouquetService bouquetService;
 
-    static Flower flower;
-    static Flower flowerAnother;
-    BouquetDTO bouquetDTOFairyTale;
-    BouquetDTO bouquetDTOFairyTaleSmall;
-    static BouquetDTO bouquetDTOFairyTaleYellow;
+    private static Flower flower;
+    private static Flower flowerAnother;
+    private BouquetDTO bouquetDTOFairyTale;
+    private BouquetDTO bouquetDTOFairyTaleSmall;
+    private static BouquetDTO bouquetDTOFairyTaleYellow;
     @BeforeAll
     static void prepareDataFlower(){
         Season season = new Season();

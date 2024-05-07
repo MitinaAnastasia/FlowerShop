@@ -27,10 +27,10 @@ public class FlowerControllerTest {
     @Mock
     private FlowerService flowerService;
 
-    Season season;
-    Provider provider;
-    FlowerDTO flowerDTOIrisLilac;
-    FlowerDTO flowerDTOAnother;
+    public Season season;
+    public Provider provider;
+    private FlowerDTO flowerDTOIrisLilac;
+    private FlowerDTO flowerDTOAnother;
 
     @BeforeAll
     static void prepareDataSeasonAndProvider(){
